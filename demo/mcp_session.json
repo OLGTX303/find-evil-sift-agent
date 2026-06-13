@@ -1,0 +1,107 @@
+[
+  {
+    "tool": "list_users",
+    "elapsed_s": 10.23,
+    "result": {
+      "users": [
+        "PC User",
+        "Default",
+        "defaultprinter"
+      ],
+      "raw_paths": [
+        "/mnt/windows/Users/Default/NTUSER.DAT",
+        "/mnt/windows/Users/defaultprinter/NTUSER.DAT",
+        "/mnt/windows/Users/PC User/NTUSER.DAT"
+      ]
+    }
+  },
+  {
+    "tool": "find_suspicious_executables",
+    "elapsed_s": 2.1,
+    "result": {
+      "suspicious_executables": [],
+      "count": 0
+    }
+  },
+  {
+    "tool": "hash_file",
+    "elapsed_s": 0.53,
+    "result": {
+      "path": "/mnt/windows/Users/PC User/AppData/Local/Temp/set_PxRcHIFy.exe",
+      "md5": "6f047f29414952777ace6d1cf5b598bc",
+      "sha256": "90cff67f8f08f54d803a2983b0924ef1eec55832115e33d7d89f390ad9bb03a9"
+    }
+  },
+  {
+    "tool": "extract_network_artifacts",
+    "elapsed_s": 47.95,
+    "result": {
+      "prefetch_files": [
+        "/mnt/windows/Windows/Prefetch/7Z1602-X64.EXE-D5C6A9F5.pf",
+        "/mnt/windows/Windows/Prefetch/7ZFM.EXE-44040917.pf",
+        "/mnt/windows/Windows/Prefetch/7ZG.EXE-D9AA3A0B.pf",
+        "/mnt/windows/Windows/Prefetch/APPLEIEDAV.EXE-1C2231B9.pf",
+        "/mnt/windows/Windows/Prefetch/EDD.EXE-61C51318.pf",
+        "/mnt/windows/Windows/Prefetch/EXCEL.EXE-9231AABD.pf",
+        "/mnt/windows/Windows/Prefetch/EXPLORER.EXE-03C49D11.pf",
+        "/mnt/windows/Windows/Prefetch/FILEHISTORY.EXE-982E7044.pf",
+        "/mnt/windows/Windows/Prefetch/FIREFOX.EXE-D8019162.pf",
+        "/mnt/windows/Windows/Prefetch/FIXADATAREGKEY.EXE-5A13A71D.pf",
+        "/mnt/windows/Windows/Prefetch/FLIPBOARD.EXE-6EF9049F.pf",
+        "/mnt/windows/Windows/Prefetch/FLIPBOARD.EXE-73FDE115.pf",
+        "/mnt/windows/Windows/Prefetch/SLIDETOSHUTDOWN.EXE-6E60E40A.pf",
+        "/mnt/windows/Windows/Prefetch/SMALLFTPD.EXE-CF55BE9B.pf",
+        "/mnt/windows/Windows/Prefetch/SNIPPINGTOOL.EXE-74818B88.pf",
+        "/mnt/windows/Windows/Prefetch/SOFTWAREUPDATE.EXE-2ED64A89.pf",
+        "/mnt/windows/Windows/Prefetch/STIKYNOT.EXE-0A91F13B.pf",
+        "/mnt/windows/Windows/Prefetch/DLLHOST.EXE-1B91EF29.pf",
+        "/mnt/windows/Windows/Prefetch/DLLHOST.EXE-6A829A47.pf",
+        "/mnt/windows/Windows/Prefetch/DLLHOST.EXE-7682DD6F.pf",
+        "/mnt/windows/Windows/Prefetch/DLLHOST.EXE-829F390C.pf",
+        "/mnt/windows/Windows/Prefetch/CMD.EXE-CD245F9E.pf",
+        "/mnt/windows/Windows/Prefetch/DLLHOST.EXE-892407E4.pf",
+        "/mnt/windows/Windows/Prefetch/OPENWITH.EXE-BA0DC300.pf",
+        "/mnt/windows/Windows/Prefetch/RUNDLL32.EXE-855F9F72.pf",
+        "/mnt/windows/Windows/Prefetch/RUNDLL32.EXE-D43E0EF5.pf",
+        "/mnt/windows/Windows/Prefetch/TELEGRAM.EXE-6A503CE5.pf",
+        "/mnt/windows/Windows/Prefetch/MMC.EXE-4710341D.pf",
+        "/mnt/windows/Windows/Prefetch/MMC.EXE-CCF10029.pf",
+        "/mnt/windows/Windows/Prefetch/MMC.EXE-E032E943.pf",
+        "/mnt/windows/Windows/Prefetch/MPCMDRUN.EXE-6520183E.pf",
+        "/mnt/windows/Windows/Prefetch/MSASCUI.EXE-4ED47FD9.pf",
+        "/mnt/windows/Windows/Prefetch/MSDT.EXE-A16F1692.pf",
+        "/mnt/windows/Windows/Prefetch/DLLHOST.EXE-CBBF30BE.pf",
+        "/mnt/windows/Windows/Prefetch/DLLHOST.EXE-F8F2B7B0.pf",
+        "/mnt/windows/Windows/Prefetch/DROPBOXUPDATE.EXE-E72FEFE1.pf",
+        "/mnt/windows/Windows/Prefetch/DRVINST.EXE-26FFA444.pf",
+        "/mnt/windows/Windows/Prefetch/DSMUSERTASK.EXE-D4A83970.pf",
+        "/mnt/windows/Windows/Prefetch/DWM.EXE-F29FE9E2.pf",
+        "/mnt/windows/Windows/Prefetch/UNINS000.EXE-5F3ACAB1.pf",
+        "/mnt/windows/Windows/Prefetch/UNINS000.EXE-B4622B85.pf",
+        "/mnt/windows/Windows/Prefetch/UPDATER.EXE-1802EA94.pf",
+        "/mnt/windows/Windows/Prefetch/USERACCOUNTCONTROLSETTINGS.EX-550E3008.pf",
+        "/mnt/windows/Windows/Prefetch/UTORRENT.EXE-B8C1E45F.pf",
+        "/mnt/windows/Windows/Prefetch/VERACRYPT FORMAT.EXE-6EA86AF5.pf",
+        "/mnt/windows/Windows/Prefetch/VERACRYPT SETUP 1.17.EXE-9CE5E690.pf",
+        "/mnt/windows/Windows/Prefetch/VERACRYPT.EXE-9E1B0240.pf",
+        "/mnt/windows/Windows/Prefetch/VIDEO.UI.EXE-06A07727.pf",
+        "/mnt/windows/Windows/Prefetch/SEARCHFILTERHOST.EXE-10E4267C.pf",
+        "/mnt/windows/Windows/Prefetch/SEARCHPROTOCOLHOST.EXE-C6CFE2A8.pf"
+      ],
+      "hosts_file": [],
+      "chrome_history_paths": [
+        "/mnt/windows/Users/defaultprinter/AppData/Local/Google/Chrome/User Data/Default/History",
+        "/mnt/windows/Users/PC User/AppData/Local/Google/Chrome/User Data/Default/History"
+      ]
+    }
+  },
+  {
+    "tool": "get_system_info",
+    "elapsed_s": 40.48,
+    "result": {
+      "hostname": "",
+      "os_info": "",
+      "timezone": ""
+    }
+  }
+]

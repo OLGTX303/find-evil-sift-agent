@@ -1,0 +1,56 @@
+{
+  "scenes": [
+    {
+      "id": "01_title",
+      "narration": "Find Evil. An autonomous forensic incident response agent, powered by gee pee tee five point four mini, driving a SIFT Workstation through the Model Context Protocol."
+    },
+    {
+      "id": "02_case",
+      "narration": "Our target is the Vanko case. A Microsoft Surface 3, acquired November fourth, twenty sixteen, as a one hundred nineteen gigabyte forensic disk image. The mission is simple to state and hard to do. Find the evil hiding on this machine."
+    },
+    {
+      "id": "03_problem",
+      "narration": "Traditional incident response is slow and manual. An analyst spends hours mounting the image, parsing event logs, walking the registry, and correlating artifacts by hand. We asked a different question. What if an AI agent could run the entire investigation by itself, and explain every step?"
+    },
+    {
+      "id": "04_arch",
+      "narration": "Here is the architecture. On the Windows host, our orchestrator drives a custom MCP server that exposes eighteen forensic tools. Each tool reaches into an isolated SIFT Workstation virtual machine over SSH. The evidence is mounted strictly read only, so the agent can investigate but never alter the original image."
+    },
+    {
+      "id": "05_loop",
+      "narration": "The agent runs an autonomous loop. It sets up the evidence, mounts the image with ewf mount and kpartx, enumerates users and system information, hunts for suspicious executables, parses the security event log, runs YARA, and builds a full timeline with log to timeline. When a tool fails, it self corrects and tries another path. Every decision is written to a structured audit log."
+    },
+    {
+      "id": "05b_agent_demo",
+      "narration": "Now watch the agent work for real. It connects to the MCP server and enumerates the user accounts, finding the primary profile, PC User. It scans for executables in unusual locations and surfaces forty one of them, including a random named dropper in the temp folder and a typo squatted license server. It hashes the dropper, then inspects that license server and uncovers hidden HTTP and FTP exfiltration calls behind an administrator manifest. Finally, the prefetch folder confirms that S delete, VeraCrypt, and NetStumbler were all actually executed. Every tool call here is live, and every result is real forensic data pulled straight from the mounted image."
+    },
+    {
+      "id": "06_find1",
+      "narration": "And it found evil. Critical finding one. Unauthorized wireless surveillance. The subject captured network traffic on a public Starbucks hotspot, using NetStumbler and Acrylic WiFi Professional. The packet capture and a confirmed prefetch execution leave no doubt."
+    },
+    {
+      "id": "07_find2",
+      "narration": "Critical finding two. Documents about weaponizing technology. Research to weaponize the ion thruster. DNA splice test notes. Rapid cell regeneration research. The titles alone justify immediate escalation."
+    },
+    {
+      "id": "08_find3",
+      "narration": "High severity finding three. Anti forensics. The subject placed S delete, a secure deletion tool, into the System thirty two folder and ran it, confirmed by prefetch. VeraCrypt was installed and a format was executed, creating a hidden encrypted volume. This is deliberate evidence destruction."
+    },
+    {
+      "id": "09_find4",
+      "narration": "Two more suspicious executables. A random named binary in the temp directory, a classic malware dropper pattern. And a typo squatted file called Network License Server, whose strings reveal hidden HTTP and FTP exfiltration functions and a demand for administrator rights."
+    },
+    {
+      "id": "10_find5",
+      "narration": "The agent even unmasked the operator. A copy of the security event log sat on the desktop, evidence of counter forensic self monitoring. Inside it, logon events tie the activity to a real identity. Anthony Vanko."
+    },
+    {
+      "id": "11_results",
+      "narration": "Eight findings in total. Two critical, four high, and two medium. Every finding carries a confidence score, supporting evidence, and a recommended action. The agent even records its false positives, confirming that a suspicious looking app was really just the legitimate CNN store app. This is explainable, reproducible forensics."
+    },
+    {
+      "id": "12_outro",
+      "narration": "From a raw disk image to a courtroom ready report, with no human in the loop. The full project is open source under the MIT license. Find Evil. Autonomous incident response, powered by AI. Thank you."
+    }
+  ]
+}

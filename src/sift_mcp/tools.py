@@ -66,12 +66,13 @@ async def list_recent_files(username: str = None, count: int = 50) -> dict:
 
 
 async def find_suspicious_executables() -> dict:
-    """Find executables in unusual locations (temp dirs, user dirs, etc.)."""
+    """Find executables in unusual locations (temp dirs, user dirs, downloads)."""
     locations = [
-        "/mnt/windows/*/Users/*/AppData/Local/Temp/*.exe",
-        "/mnt/windows/*/Users/*/AppData/Roaming/*.exe",
-        "/mnt/windows/*/Windows/Temp/*.exe",
-        "/mnt/windows/*/ProgramData/*.exe",
+        "/mnt/windows/Users -ipath '*/AppData/Local/Temp/*.exe'",
+        "/mnt/windows/Users -ipath '*/AppData/Roaming/*.exe'",
+        "/mnt/windows/Users -ipath '*/Downloads/*.exe'",
+        "/mnt/windows/Windows/Temp -name '*.exe'",
+        "/mnt/windows/ProgramData -maxdepth 2 -name '*.exe'",
     ]
     all_hits = []
     for pattern in locations:
