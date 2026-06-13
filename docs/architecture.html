@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  :root{
+    --bg:#0d1117; --surface:#161b22; --border:#30363d;
+    --text:#e6edf3; --muted:#8b949e;
+    --red:#f85149; --green:#3fb950; --blue:#58a6ff;
+    --amber:#d29922; --purple:#bc8cff; --teal:#39d353;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1400px;height:900px;overflow:hidden;background:var(--bg);
+    font-family:Consolas,'Courier New',monospace;color:var(--text)}
+
+  .title{position:absolute;top:28px;left:50%;transform:translateX(-50%);
+    font-size:22px;font-weight:700;letter-spacing:2px;color:var(--text);
+    font-family:'Segoe UI',Arial,sans-serif}
+  .subtitle{position:absolute;top:58px;left:50%;transform:translateX(-50%);
+    font-size:13px;color:var(--muted);letter-spacing:1px;
+    font-family:'Segoe UI',Arial,sans-serif}
+
+  /* ── boxes ── */
+  .box{position:absolute;border-radius:10px;border:1.5px solid var(--border)}
+
+  /* HOST boundary */
+  .host{left:40px;top:90px;width:640px;height:460px;
+    border-color:rgba(88,166,255,.45);background:rgba(88,166,255,.04)}
+  .host-label{position:absolute;top:-13px;left:16px;background:var(--bg);
+    padding:0 8px;font-size:11px;color:var(--blue);letter-spacing:1px;font-weight:700}
+
+  /* VM boundary */
+  .vm{left:760px;top:90px;width:600px;height:670px;
+    border-color:rgba(248,81,73,.40);background:rgba(248,81,73,.03)}
+  .vm-label{position:absolute;top:-13px;left:16px;background:var(--bg);
+    padding:0 8px;font-size:11px;color:var(--red);letter-spacing:1px;font-weight:700}
+
+  /* component cards */
+  .card{position:absolute;border-radius:8px;border:1px solid var(--border);
+    background:var(--surface);padding:14px 16px}
+  .card-title{font-size:12px;font-weight:700;letter-spacing:.5px;margin-bottom:6px}
+  .card-body{font-size:11px;color:var(--muted);line-height:1.7}
+  .card-body b{color:var(--text);font-weight:700}
+
+  /* orchestrator */
+  .orch{left:60px;top:120px;width:300px}
+  .orch .card-title{color:var(--blue)}
+
+  /* MCP server */
+  .mcp{left:60px;top:290px;width:590px}
+  .mcp .card-title{color:var(--amber)}
+
+  /* API cloud */
+  .api{left:400px;top:120px;width:260px;border-style:dashed;border-color:rgba(188,140,255,.5)}
+  .api .card-title{color:var(--purple)}
+
+  /* output */
+  .output{left:60px;top:490px;width:590px;border-color:rgba(63,185,80,.4)}
+  .output .card-title{color:var(--green)}
+
+  /* evidence */
+  .evid{left:780px;top:115px;width:560px}
+  .evid .card-title{color:var(--red)}
+
+  /* mount chain */
+  .mount{left:780px;top:260px;width:560px;background:#0a0e14}
+  .mount .card-title{color:var(--muted)}
+
+  /* SIFT tools */
+  .tools{left:780px;top:430px;width:560px}
+  .tools .card-title{color:var(--teal)}
+
+  /* guardrails */
+  .guard{left:780px;top:620px;width:560px;border-color:rgba(248,81,73,.4);background:rgba(248,81,73,.04)}
+  .guard .card-title{color:var(--red)}
+
+  /* ── arrows ── */
+  svg.arrows{position:absolute;inset:0;width:1400px;height:900px;pointer-events:none;overflow:visible}
+
+  /* ── legend ── */
+  .legend{position:absolute;bottom:22px;left:40px;display:flex;gap:28px;
+    font-size:11px;color:var(--muted);align-items:center}
+  .litem{display:flex;align-items:center;gap:7px}
+  .lline{width:32px;height:2px}
+  .l-solid{background:var(--blue)}
+  .l-dash{background:none;border-top:2px dashed var(--purple)}
+  .l-ssh{background:var(--amber)}
+  .l-ro{background:var(--red)}
+
+  /* pattern tag */
+  .pattern{position:absolute;bottom:22px;right:40px;
+    border:1px solid rgba(188,140,255,.45);border-radius:8px;
+    padding:8px 18px;font-size:12px;color:var(--purple);
+    font-family:'Segoe UI',Arial,sans-serif}
+  .pattern b{font-size:14px;display:block;margin-bottom:2px}
+</style>
+</head>
+<body>
+
+<div class="title">FIND EVIL! — Architecture</div>
+<div class="subtitle">AUTONOMOUS FORENSIC INCIDENT RESPONSE AGENT · CUSTOM MCP SERVER PATTERN</div>
+
+<!-- HOST boundary -->
+<div class="box host">
+  <div class="host-label">WINDOWS HOST · ANALYST WORKSTATION</div>
+</div>
+
+<!-- VM boundary -->
+<div class="box vm">
+  <div class="vm-label">SIFT WORKSTATION 2026 · VMware NAT · Ubuntu 22.04</div>
+</div>
+
+<!-- Orchestrator card -->
+<div class="box card orch">
+  <div class="card-title">orchestrator.py</div>
+  <div class="card-body">
+    <b>gpt-5.4-mini</b> via OpenAI-compat API<br>
+    40-iteration autonomous loop<br>
+    tool_choice="auto" dispatch<br>
+    AuditLogger → JSONL
+  </div>
+</div>
+
+<!-- API cloud -->
+<div class="box card api">
+  <div class="card-title">☁ API ENDPOINT</div>
+  <div class="card-body">
+    <b>api.456478.xyz</b><br>
+    OpenAI-compatible gateway<br>
+    model: gpt-5.4-mini<br>
+    HTTPS / REST
+  </div>
+</div>
+
+<!-- MCP server -->
+<div class="box card mcp">
+  <div class="card-title">sift-forensic-mcp · 18 TOOLS · stdio transport</div>
+  <div class="card-body">
+    <b>Evidence setup:</b> setup_evidence, mount_image, unmount_image &nbsp;·&nbsp;
+    <b>File system:</b> list_users, list_recent_files, find_suspicious_executables, extract_file<br>
+    <b>Timeline:</b> run_log2timeline, get_timeline_status, run_psort &nbsp;·&nbsp;
+    <b>Registry:</b> parse_registry, get_run_keys<br>
+    <b>Malware:</b> yara_scan, hash_file, check_known_malware_hashes &nbsp;·&nbsp;
+    <b>Events:</b> parse_evtx, get_logon_events &nbsp;·&nbsp;
+    <b>Network:</b> extract_network_artifacts
+  </div>
+</div>
+
+<!-- Output card -->
+<div class="box card output">
+  <div class="card-title">OUTPUT · findings/</div>
+  <div class="card-body">
+    <b>findings_report.json</b> — 8 findings, confidence-scored IOCs, timeline highlights<br>
+    <b>agent_execution_log.jsonl</b> — timestamped tool calls + token usage (append-only)
+  </div>
+</div>
+
+<!-- Evidence card -->
+<div class="box card evid">
+  <div class="card-title">EVIDENCE · VANKO case</div>
+  <div class="card-body">
+    <b>surface_physical.E01–E21</b> · 119 GB EWF<br>
+    MD5: 4032d556cc866c23f1e797410e95603c<br>
+    SHA1: e0e72dfcef167dd358813726e82f6c235bc85ce7<br>
+    Device: Microsoft Surface 3 · acquired 2016-11-04
+  </div>
+</div>
+
+<!-- Mount chain -->
+<div class="box card mount">
+  <div class="card-title">READ-ONLY MOUNT CHAIN</div>
+  <div class="card-body">
+    surface_physical.E01<br>
+    &nbsp;&nbsp;└─ <b>ewfmount</b> (FUSE, read-only) → /mnt/ewf/ewf1<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ <b>kpartx</b> → /dev/mapper/loop0p3<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└─ <b>ntfs-3g -o ro</b> → <b style="color:var(--green)">/mnt/windows/</b>
+  </div>
+</div>
+
+<!-- SIFT tools -->
+<div class="box card tools">
+  <div class="card-title">SIFT TOOLS (200+ available · subset used)</div>
+  <div class="card-body">
+    <b>ewfmount</b> &nbsp;·&nbsp; <b>log2timeline/plaso</b> &nbsp;·&nbsp; <b>psort</b> &nbsp;·&nbsp;
+    <b>YARA</b> &nbsp;·&nbsp; <b>Regripper</b><br>
+    <b>python-evtx</b> &nbsp;·&nbsp; <b>python-registry</b> &nbsp;·&nbsp;
+    <b>strings</b> &nbsp;·&nbsp; <b>file</b> &nbsp;·&nbsp; <b>find</b>
+  </div>
+</div>
+
+<!-- Guardrails -->
+<div class="box card guard">
+  <div class="card-title">GUARDRAILS · evidence integrity</div>
+  <div class="card-body">
+    <b>Architectural:</b> no write/delete tools exposed via MCP · ntfs-3g -o ro rejects writes with EROFS<br>
+    <b>Network:</b> VMware NAT isolates VM · only SSH port 22 reachable from host<br>
+    <b>Prompt-based:</b> system prompt instructs agent to treat evidence as read-only and flag uncertainty
+  </div>
+</div>
+
+<!-- Arrows SVG -->
+<svg class="arrows">
+  <defs>
+    <marker id="ab" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#58a6ff"/>
+    </marker>
+    <marker id="am" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#d29922"/>
+    </marker>
+    <marker id="ap" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#bc8cff"/>
+    </marker>
+    <marker id="ag" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#3fb950"/>
+    </marker>
+    <marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#f85149"/>
+    </marker>
+  </defs>
+
+  <!-- orchestrator ↔ MCP (in-process) -->
+  <line x1="210" y1="235" x2="210" y2="284" stroke="#58a6ff" stroke-width="2" marker-end="url(#ab)"/>
+  <text x="215" y="265" fill="#8b949e" font-size="10" font-family="Consolas">in-process</text>
+
+  <!-- orchestrator → API (HTTPS) -->
+  <path d="M 362 165 Q 430 155 398 165" stroke="#bc8cff" stroke-width="1.5" stroke-dasharray="5,4" fill="none" marker-end="url(#ap)"/>
+  <text x="374" y="150" fill="#bc8cff" font-size="10" font-family="Consolas">HTTPS</text>
+
+  <!-- MCP → SIFT VM (SSH) -->
+  <line x1="652" y1="340" x2="758" y2="340" stroke="#d29922" stroke-width="2.5" marker-end="url(#am)"/>
+  <text x="668" y="330" fill="#d29922" font-size="11" font-family="Consolas" font-weight="bold">asyncssh · TCP 22</text>
+
+  <!-- MCP → output -->
+  <line x1="330" y1="418" x2="330" y2="483" stroke="#3fb950" stroke-width="1.5" marker-end="url(#ag)"/>
+
+  <!-- mount chain → tools -->
+  <line x1="1060" y1="408" x2="1060" y2="424" stroke="#f85149" stroke-width="1.5" marker-end="url(#ar)"/>
+
+  <!-- tools → guard -->
+  <line x1="1060" y1="580" x2="1060" y2="614" stroke="#f85149" stroke-width="1" stroke-dasharray="3,3" marker-end="url(#ar)"/>
+</svg>
+
+<!-- Legend -->
+<div class="legend">
+  <div class="litem"><div class="lline l-solid"></div><span>Python in-process call</span></div>
+  <div class="litem"><div class="lline l-dash"></div><span>HTTPS (LLM API)</span></div>
+  <div class="litem"><div class="lline l-ssh" style="background:var(--amber)"></div><span>asyncssh TCP 22</span></div>
+  <div class="litem"><div class="lline" style="background:var(--green)"></div><span>output write</span></div>
+  <div class="litem"><div class="lline" style="background:var(--red)"></div><span>read-only FUSE mount</span></div>
+</div>
+
+<!-- Pattern tag -->
+<div class="pattern">
+  <b>Custom MCP Server</b>
+  Architectural pattern
+</div>
+
+</body>
+</html>

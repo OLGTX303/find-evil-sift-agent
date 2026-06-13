@@ -4,23 +4,21 @@
 
 - Windows 10/11 host with VMware Workstation Pro 17+
 - Python 3.10+
-- Anthropic API key
-- ~150GB free disk space (evidence + VM)
-- 8GB+ RAM recommended for SIFT VM
+- OpenAI-compatible API key
+- ~150 GB free disk space (evidence + VM)
+- 8 GB+ RAM (16 GB recommended for SIFT VM)
 
 ## Step 1 — Clone and install
 
 ```bash
-git clone https://github.com/<your-repo>/sift-agent
-cd sift-agent
+git clone https://github.com/OLGTX303/find-evil-sift-agent
+cd find-evil-sift-agent
 pip install -e .
-pip install anthropic asyncssh
 ```
 
 ## Step 2 — Import SIFT VM
 
 ```powershell
-# Import OVA into VMware (takes ~20 min for 10GB OVA)
 $ovftool = "C:\Program Files (x86)\VMware\VMware Workstation\OVFTool\ovftool.exe"
 & $ovftool --acceptAllEulas --name="SIFT-2026" sift-2026-04-22.ova F:\SIFT-VM\
 ```
@@ -29,27 +27,28 @@ $ovftool = "C:\Program Files (x86)\VMware\VMware Workstation\OVFTool\ovftool.exe
 
 Copy the VANKO evidence files to your machine:
 ```
-find\VANKO\surface_physical.E01 through E21
+find\VANKO\surface_physical.E01 through .E21
 find\VANKO\vanko-c-drive.CYLR.7z
 ```
 
-## Step 4 — Configure and start SIFT VM
+## Step 4 — Configure and start the SIFT VM
 
 ```bash
 python setup_sift_vm.py
-# This starts the VM, enables SSH, and copies evidence files
-# Note the VM IP address printed at the end
+# Starts the VM, enables SSH, copies evidence files
+# Prints the VM IP at the end
 ```
 
 ## Step 5 — Set environment variables
 
 ```powershell
-$env:ANTHROPIC_API_KEY = "sk-ant-..."
-$env:SIFT_HOST = "192.168.x.x"   # from setup_sift_vm.py output
-$env:SIFT_PORT = "22"
-$env:SIFT_USER = "sansforensics"
-$env:SIFT_PASS = "forensics"
-$env:EVIDENCE_DIR = "/cases/VANKO"
+$env:OPENAI_API_KEY  = "sk-..."
+$env:OPENAI_BASE_URL = "https://api.openai.com/v1"
+$env:SIFT_HOST       = "192.168.x.x"   # printed by setup_sift_vm.py
+$env:SIFT_PORT       = "22"
+$env:SIFT_USER       = "sansforensics"
+$env:SIFT_PASS       = "forensics"
+$env:EVIDENCE_DIR    = "/cases/VANKO"
 ```
 
 ## Step 6 — Run the autonomous investigation
@@ -58,8 +57,8 @@ $env:EVIDENCE_DIR = "/cases/VANKO"
 python orchestrator.py --output-dir ./findings
 ```
 
-Watch the agent reason and execute tools in real-time on stderr.
-Investigation takes approximately 15–30 minutes.
+Watch the agent reason and call tools in real time on stderr.
+Investigation takes approximately **15–30 minutes**.
 
 ## Step 7 — Review findings
 
@@ -68,21 +67,20 @@ Investigation takes approximately 15–30 minutes.
 cat findings/findings_report.json
 
 # Full audit trail
-cat findings/agent_execution_log.jsonl | python -m json.tool --no-ensure-ascii | less
+cat findings/agent_execution_log.jsonl
 ```
 
-## Optional — Run as Claude Code MCP server
+## Optional — Run as a Claude Code MCP server
 
 ```bash
-# Register with Claude Code
 claude mcp add sift-forensic \
-  -e SIFT_HOST=$SIFT_HOST \
+  -e SIFT_HOST=$env:SIFT_HOST \
   -e SIFT_PORT=22 \
   -e SIFT_USER=sansforensics \
   -e SIFT_PASS=forensics \
   -- sift-mcp
 
-# Then in Claude Code chat:
+# Then in Claude Code:
 # "Mount the VANKO image and investigate for signs of compromise"
 ```
 
@@ -90,7 +88,12 @@ claude mcp add sift-forensic \
 
 | Problem | Solution |
 |---|---|
-| SSH connection refused | Check VM is started: `vmrun list` |
-| ewfmount: image not found | Verify evidence copied: `setup_sift_vm.py` |
-| log2timeline slow | Normal — takes 30–60 min for 119GB image. Agent continues other analysis while waiting. |
-| YARA rules not found | SIFT includes rules at `/opt/remnux-rules`; set `rules_dir` accordingly |
+| SSH connection refused | Check VM is running: `vmrun list` |
+| ewfmount: image not found | Verify evidence path: check `setup_sift_vm.py` output |
+| log2timeline is slow | Normal — 30–60 min for 119 GB. Agent continues other analysis while waiting. |
+| YARA rules not found | SIFT includes rules at `/opt/remnux-rules`; pass `rules_dir` param to `yara_scan` |
+| `find_suspicious_executables` returns 0 | Image may not be mounted. Call `mount_image` tool first. |
+
+## Demo video
+
+https://youtu.be/ySjuSR9AP3Q

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  :root{
+    --bg:#0d1117; --term:#0a0e14; --text:#e6edf3; --muted:#8b949e;
+    --red:#f85149; --green:#3fb950; --blue:#58a6ff; --amber:#d29922; --purple:#bc8cff;
+    --line:#30363d;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1920px;height:1080px;overflow:hidden}
+  body{
+    background:
+      radial-gradient(1200px 700px at 82% 18%, rgba(248,81,73,.16), transparent 60%),
+      radial-gradient(1000px 800px at 10% 95%, rgba(88,166,255,.12), transparent 55%),
+      #0d1117;
+    font-family:'Segoe UI',Arial,sans-serif; color:var(--text); position:relative;
+  }
+  /* faint forensic grid */
+  .grid{position:absolute;inset:0;
+    background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
+                     linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+    background-size:46px 46px; mask-image:radial-gradient(circle at 50% 45%,#000 55%,transparent 85%);}
+  .scan{position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.015) 0 2px,transparent 2px 5px);}
+
+  .wrap{position:relative;height:100%;padding:64px 84px;display:flex;flex-direction:column}
+
+  .top{display:flex;justify-content:space-between;align-items:center}
+  .brand{font-weight:800;font-size:34px;letter-spacing:.5px;color:var(--red)}
+  .brand span{color:var(--muted);font-weight:600;font-size:26px;margin-left:14px}
+  .case{font-family:Consolas,monospace;font-size:26px;color:var(--green);
+    border:1px solid rgba(63,185,80,.4);padding:8px 18px;border-radius:10px;background:rgba(63,185,80,.06)}
+
+  .center{flex:1;display:flex;flex-direction:column;justify-content:center;max-width:1280px}
+  .kicker{font-family:Consolas,monospace;font-size:28px;letter-spacing:8px;color:var(--amber);margin-bottom:18px}
+  .title{font-size:168px;font-weight:800;line-height:.92;letter-spacing:-2px;
+    background:linear-gradient(92deg,#fff 0%,#ffd7a8 38%,var(--red) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 6px 30px rgba(248,81,73,.25))}
+  .sub{font-size:46px;font-weight:700;color:var(--text);margin-top:18px}
+  .tag{font-size:30px;color:var(--muted);margin-top:18px;max-width:1050px;line-height:1.4}
+
+  .chips{display:flex;gap:18px;margin-top:40px;flex-wrap:wrap}
+  .chip{font-size:27px;font-weight:700;padding:12px 24px;border-radius:14px;border:2px solid}
+  .c1{border-color:var(--blue);color:var(--blue)}
+  .c2{border-color:var(--green);color:var(--green)}
+  .c3{border-color:var(--red);color:var(--red)}
+  .c4{border-color:var(--purple);color:var(--purple)}
+
+  /* play button */
+  .play{position:absolute;right:150px;top:50%;transform:translateY(-50%);
+    width:230px;height:230px;border-radius:50%;
+    background:radial-gradient(circle at 50% 50%,rgba(248,81,73,.18),rgba(248,81,73,.04));
+    border:3px solid rgba(248,81,73,.55);display:flex;align-items:center;justify-content:center;
+    box-shadow:0 0 80px rgba(248,81,73,.35), inset 0 0 40px rgba(248,81,73,.12)}
+  .play::before{content:"";display:block;width:0;height:0;margin-left:18px;
+    border-left:74px solid var(--red);border-top:46px solid transparent;border-bottom:46px solid transparent;
+    filter:drop-shadow(0 0 18px rgba(248,81,73,.6))}
+  .ring{position:absolute;right:120px;top:50%;transform:translateY(-50%);
+    width:290px;height:290px;border-radius:50%;border:1px solid rgba(248,81,73,.25)}
+
+  .bottom{display:flex;justify-content:space-between;align-items:center;
+    border-top:1px solid var(--line);padding-top:24px;font-size:25px;color:var(--muted)}
+  .bottom .stack b{color:var(--text);font-weight:700}
+  .bottom .repo{font-family:Consolas,monospace}
+</style>
+</head>
+<body>
+  <div class="grid"></div>
+  <div class="scan"></div>
+
+  <div class="ring"></div>
+  <div class="play"></div>
+
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">FIND EVIL!<span>Autonomous Forensic IR Agent</span></div>
+      <div class="case">Case #20161104 — VANKO</div>
+    </div>
+
+    <div class="center">
+      <div class="kicker">AUTONOMOUS FORENSIC INCIDENT RESPONSE</div>
+      <div class="title">SIFT<br>SENTINEL</div>
+      <div class="sub">An AI agent that finds evil on a disk image.</div>
+      <div class="tag">It mounts a 119&nbsp;GB forensic image read-only, hunts malware and
+        anti-forensics through 18 MCP tools on a SIFT Workstation, and writes a
+        courtroom-ready report — with no human in the loop.</div>
+
+      <div class="chips">
+        <div class="chip c1">gpt-5.4-mini</div>
+        <div class="chip c2">18 MCP tools</div>
+        <div class="chip c3">8 findings · subject identified</div>
+        <div class="chip c4">119 GB image · read-only</div>
+      </div>
+    </div>
+
+    <div class="bottom">
+      <div class="stack"><b>SIFT Workstation</b> &nbsp;·&nbsp; <b>Model Context Protocol</b> &nbsp;·&nbsp; <b>VoxCPM</b> narration</div>
+      <div class="repo">github.com/OLGTX303/find-evil-sift-agent</div>
+    </div>
+  </div>
+</body>
+</html>

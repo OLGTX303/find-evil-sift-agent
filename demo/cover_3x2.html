@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  :root{
+    --bg:#0d1117; --term:#0a0e14; --text:#e6edf3; --muted:#8b949e;
+    --red:#f85149; --green:#3fb950; --blue:#58a6ff; --amber:#d29922; --purple:#bc8cff;
+    --line:#30363d;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1200px;height:800px;overflow:hidden}
+  body{
+    background:
+      radial-gradient(700px 500px at 80% 15%, rgba(248,81,73,.18), transparent 60%),
+      radial-gradient(600px 500px at 8%  90%, rgba(88,166,255,.13), transparent 55%),
+      #0d1117;
+    font-family:'Segoe UI',Arial,sans-serif; color:var(--text); position:relative;
+  }
+
+  /* faint forensic grid */
+  .grid{position:absolute;inset:0;
+    background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
+                     linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+    background-size:40px 40px;
+    mask-image:radial-gradient(ellipse 80% 80% at 50% 45%,#000 55%,transparent 85%);}
+  .scan{position:absolute;inset:0;
+    background:repeating-linear-gradient(0deg,rgba(255,255,255,.013) 0 2px,transparent 2px 5px);}
+
+  /* corner accent lines */
+  .corner{position:absolute;width:40px;height:40px;border-color:var(--red);border-style:solid;opacity:.45}
+  .tl{top:20px;left:20px;border-width:2px 0 0 2px}
+  .tr{top:20px;right:20px;border-width:2px 2px 0 0}
+  .bl{bottom:20px;left:20px;border-width:0 0 2px 2px}
+  .br{bottom:20px;right:20px;border-width:0 2px 2px 0}
+
+  .wrap{position:relative;height:100%;padding:38px 52px;display:flex;flex-direction:column}
+
+  /* ── top bar ── */
+  .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+  .brand{font-weight:800;font-size:22px;letter-spacing:.4px;color:var(--red)}
+  .brand span{color:var(--muted);font-weight:600;font-size:17px;margin-left:10px}
+  .case{font-family:Consolas,monospace;font-size:16px;color:var(--green);
+    border:1px solid rgba(63,185,80,.4);padding:5px 12px;border-radius:8px;
+    background:rgba(63,185,80,.07)}
+
+  /* ── main body: left text + right graphic ── */
+  .body{flex:1;display:flex;align-items:center;gap:0}
+
+  .left{flex:1;display:flex;flex-direction:column;justify-content:center}
+  .kicker{font-family:Consolas,monospace;font-size:17px;letter-spacing:6px;
+    color:var(--amber);margin-bottom:12px}
+  .title{font-size:102px;font-weight:800;line-height:.90;letter-spacing:-1.5px;
+    background:linear-gradient(92deg,#fff 0%,#ffd7a8 42%,var(--red) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 4px 22px rgba(248,81,73,.28))}
+  .sub{font-size:28px;font-weight:700;color:var(--text);margin-top:14px}
+  .tag{font-size:17px;color:var(--muted);margin-top:10px;max-width:560px;line-height:1.5}
+
+  .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+  .chip{font-size:15px;font-weight:700;padding:7px 14px;border-radius:9px;border:1.5px solid}
+  .c1{border-color:var(--blue);color:var(--blue)}
+  .c2{border-color:var(--green);color:var(--green)}
+  .c3{border-color:var(--red);color:var(--red)}
+  .c4{border-color:var(--purple);color:var(--purple)}
+
+  /* ── right: play button graphic ── */
+  .right{width:280px;flex-shrink:0;display:flex;align-items:center;justify-content:center;position:relative}
+  .ring2{position:absolute;width:240px;height:240px;border-radius:50%;
+    border:1px solid rgba(248,81,73,.18)}
+  .ring1{position:absolute;width:190px;height:190px;border-radius:50%;
+    border:1px solid rgba(248,81,73,.30)}
+  .play{width:144px;height:144px;border-radius:50%;
+    background:radial-gradient(circle at 50% 50%,rgba(248,81,73,.22),rgba(248,81,73,.05));
+    border:2.5px solid rgba(248,81,73,.60);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 0 60px rgba(248,81,73,.40), inset 0 0 30px rgba(248,81,73,.14)}
+  .play::before{content:"";display:block;width:0;height:0;margin-left:12px;
+    border-left:46px solid var(--red);
+    border-top:29px solid transparent;border-bottom:29px solid transparent;
+    filter:drop-shadow(0 0 12px rgba(248,81,73,.65))}
+
+  /* small stat badges on ring */
+  .stat{position:absolute;font-family:Consolas,monospace;font-size:12px;
+    color:var(--muted);background:#0d1117;border:1px solid var(--line);
+    padding:4px 8px;border-radius:6px;white-space:nowrap}
+  .s1{top:14px;right:10px;color:var(--green);border-color:rgba(63,185,80,.35)}
+  .s2{bottom:14px;right:10px;color:var(--blue);border-color:rgba(88,166,255,.35)}
+  .s3{bottom:58px;left:4px;color:var(--amber);border-color:rgba(210,153,34,.35)}
+
+  /* ── bottom bar ── */
+  .bottom{display:flex;justify-content:space-between;align-items:center;
+    border-top:1px solid var(--line);padding-top:16px;font-size:15px;color:var(--muted)}
+  .bottom .stack b{color:var(--text);font-weight:700}
+  .bottom .repo{font-family:Consolas,monospace;font-size:13px}
+</style>
+</head>
+<body>
+  <div class="grid"></div>
+  <div class="scan"></div>
+
+  <!-- corner brackets -->
+  <div class="corner tl"></div>
+  <div class="corner tr"></div>
+  <div class="corner bl"></div>
+  <div class="corner br"></div>
+
+  <div class="wrap">
+
+    <div class="top">
+      <div class="brand">FIND EVIL!<span>Autonomous Forensic IR Agent</span></div>
+      <div class="case">Case #20161104 — VANKO</div>
+    </div>
+
+    <div class="body">
+
+      <div class="left">
+        <div class="kicker">FORENSIC INCIDENT RESPONSE · AI AGENT</div>
+        <div class="title">SIFT<br>SENTINEL</div>
+        <div class="sub">An AI agent that finds evil on a disk image.</div>
+        <div class="tag">Mounts a 119&nbsp;GB forensic image read-only, hunts
+          malware &amp; anti-forensics through 18 MCP tools on a SIFT
+          Workstation, and writes a courtroom-ready report — no human in the loop.</div>
+        <div class="chips">
+          <div class="chip c1">gpt-5.4-mini</div>
+          <div class="chip c2">18 MCP tools</div>
+          <div class="chip c3">8 findings · subject identified</div>
+          <div class="chip c4">119 GB · read-only</div>
+        </div>
+      </div>
+
+      <div class="right">
+        <div class="ring2"></div>
+        <div class="ring1"></div>
+        <div class="play"></div>
+        <div class="stat s1">8 findings</div>
+        <div class="stat s2">18 tools</div>
+        <div class="stat s3">119 GB</div>
+      </div>
+
+    </div>
+
+    <div class="bottom">
+      <div class="stack"><b>SIFT Workstation</b> &nbsp;·&nbsp; <b>Model Context Protocol</b> &nbsp;·&nbsp; <b>VoxCPM</b> narration</div>
+      <div class="repo">github.com/OLGTX303/find-evil-sift-agent</div>
+    </div>
+
+  </div>
+</body>
+</html>
