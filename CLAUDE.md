@@ -4,7 +4,7 @@
 
 ```
 sift-agent/
-├── orchestrator.py          ← Main autonomous IR agent (Claude claude-sonnet-4-6 driver)
+├── orchestrator.py          ← Main autonomous IR agent (gpt-5.4-mini via OpenAI-compatible API)
 ├── setup_sift_vm.py         ← One-time VM setup: start, share evidence, install deps
 ├── src/sift_mcp/
 │   ├── server.py            ← MCP server exposing SIFT tools
@@ -31,7 +31,8 @@ pip install -e .
 python setup_sift_vm.py
 
 # 4. Set environment
-set ANTHROPIC_API_KEY=your_key
+set OPENAI_API_KEY=your_key
+set OPENAI_BASE_URL=https://api.456478.xyz/
 set SIFT_HOST=<vm_ip>
 set SIFT_PORT=22      # or 2222 if using NAT
 set SIFT_USER=sansforensics
@@ -69,7 +70,7 @@ claude mcp add sift-forensic -e SIFT_HOST=<ip> -e SIFT_PORT=22 -- sift-mcp
 ```
 ┌─────────────────────────────────────────────┐
 │  Windows Host (Claude Code)                  │
-│  orchestrator.py + Claude claude-sonnet-4-6          │
+│  orchestrator.py + gpt-5.4-mini (OpenAI-compat API)  │
 │  ┌─────────────────────────────────────┐    │
 │  │  sift-forensic-mcp (stdio MCP)      │    │
 │  │  18 forensic tool definitions        │    │

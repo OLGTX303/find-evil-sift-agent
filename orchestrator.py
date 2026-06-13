@@ -2,7 +2,7 @@
 """
 FIND EVIL! Autonomous IR Orchestrator
 Drives a logical investigation pipeline against the VANKO forensic image
-using Claude claude-sonnet-4-6 and the SIFT forensic MCP server.
+using gpt-5.4-mini and the SIFT forensic MCP server.
 
 Usage:
     python orchestrator.py [--output-dir ./findings]
@@ -15,10 +15,11 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-import anthropic
+from openai import OpenAI
 
-MODEL = "claude-sonnet-4-6"
-SIFT_MCP_CMD = [sys.executable, "-m", "sift_mcp.server"]
+MODEL = "gpt-5.4-mini"
+API_BASE = os.getenv("OPENAI_BASE_URL", "https://api.456478.xyz/")
+API_KEY  = os.getenv("OPENAI_API_KEY",  "sk-gSHJ6NmtGCJrAGjk6FUXGZMsvdyb1z19wkOAYaYhhRV9cLbs")
 
 SYSTEM_PROMPT = """You are an expert digital forensic investigator performing autonomous incident response
 on the VANKO forensic image (Microsoft Surface 3, acquired 2016-11-04, Case #20161104).
@@ -89,99 +90,91 @@ class AuditLogger:
         entry = self._entry(event_type, kwargs)
         with open(self.log_path, "a") as f:
             f.write(json.dumps(entry) + "\n")
-        # Pretty-print to stderr for live visibility
         ts = entry["timestamp"][11:19]
         print(f"[{ts}] [{event_type}] {json.dumps(kwargs)[:120]}", file=sys.stderr)
         return entry
 
 
 async def run_investigation(output_dir: Path):
-    client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
+    client = OpenAI(api_key=API_KEY, base_url=API_BASE)
     audit = AuditLogger(output_dir)
-    audit.log("session_start", model=MODEL, case="20161104-VANKO")
+    audit.log("session_start", model=MODEL, base_url=API_BASE, case="20161104-VANKO")
 
-    messages = []
-    tool_results_pending = []
+    tools = await _get_tool_schemas()
+    messages = [
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "user",   "content": "Begin the autonomous investigation of the VANKO forensic image. Follow the investigation protocol systematically."},
+    ]
+
     iteration = 0
-    max_iterations = 40  # safety limit
+    max_iterations = 40
 
     while iteration < max_iterations:
         iteration += 1
         audit.log("agent_turn", iteration=iteration)
 
-        kwargs = dict(
+        response = client.chat.completions.create(
             model=MODEL,
+            messages=messages,
+            tools=tools,
+            tool_choice="auto",
             max_tokens=8096,
-            system=SYSTEM_PROMPT,
-            tools=await _get_tool_schemas(),
-            messages=messages if messages else [
-                {"role": "user", "content": "Begin the autonomous investigation of the VANKO forensic image. Follow the investigation protocol systematically."}
-            ],
         )
 
-        response = client.messages.create(**kwargs)
-        audit.log("llm_response", stop_reason=response.stop_reason, usage=dict(response.usage))
+        msg = response.choices[0].message
+        finish = response.choices[0].finish_reason
+        audit.log("llm_response", finish_reason=finish,
+                  prompt_tokens=response.usage.prompt_tokens,
+                  completion_tokens=response.usage.completion_tokens)
 
-        # Process response blocks
-        assistant_content = []
-        for block in response.content:
-            if block.type == "text":
-                assistant_content.append({"type": "text", "text": block.text})
-                if block.text.strip():
-                    audit.log("reasoning", text=block.text[:500])
-            elif block.type == "tool_use":
-                assistant_content.append({
-                    "type": "tool_use",
-                    "id": block.id,
-                    "name": block.name,
-                    "input": block.input,
-                })
-                audit.log("tool_call", tool=block.name, input=block.input)
+        # Append assistant turn to history
+        messages.append(msg)
 
-        messages.append({"role": "assistant", "content": assistant_content})
+        if msg.content:
+            audit.log("reasoning", text=msg.content[:500])
 
-        if response.stop_reason == "end_turn":
+        if finish == "stop":
             audit.log("investigation_complete", iterations=iteration)
-            # Extract final JSON report from last text block
-            for block in reversed(response.content):
-                if hasattr(block, "text") and "{" in block.text:
-                    report_path = output_dir / "findings_report.json"
-                    try:
-                        start = block.text.index("{")
-                        end = block.text.rindex("}") + 1
-                        report = json.loads(block.text[start:end])
-                        report_path.write_text(json.dumps(report, indent=2))
-                        audit.log("report_saved", path=str(report_path))
-                        print(f"\n✓ Report saved: {report_path}")
-                    except Exception:
-                        report_path.write_text(block.text)
-                    break
+            # Extract JSON report from final text
+            if msg.content and "{" in msg.content:
+                report_path = output_dir / "findings_report.json"
+                try:
+                    start = msg.content.index("{")
+                    end   = msg.content.rindex("}") + 1
+                    report = json.loads(msg.content[start:end])
+                    report_path.write_text(json.dumps(report, indent=2))
+                    audit.log("report_saved", path=str(report_path))
+                    print(f"\n✓ Report saved: {report_path}")
+                except Exception:
+                    report_path.write_text(msg.content)
             break
 
-        if response.stop_reason != "tool_use":
-            audit.log("unexpected_stop", reason=response.stop_reason)
+        if finish != "tool_calls" or not msg.tool_calls:
+            audit.log("unexpected_stop", reason=finish)
             break
 
-        # Execute tool calls
-        tool_results = []
-        for block in response.content:
-            if block.type != "tool_use":
-                continue
-            audit.log("tool_execute", tool=block.name, input=block.input)
+        # Execute each tool call
+        for tc in msg.tool_calls:
+            name = tc.function.name
             try:
-                result = await _call_sift_tool(block.name, block.input)
-                audit.log("tool_result", tool=block.name, result_preview=str(result)[:300])
+                arguments = json.loads(tc.function.arguments)
+            except json.JSONDecodeError:
+                arguments = {}
+
+            audit.log("tool_call", tool=name, input=arguments)
+
+            try:
+                result = await _call_sift_tool(name, arguments)
+                audit.log("tool_result", tool=name, result_preview=str(result)[:300])
             except Exception as exc:
                 result = {"error": str(exc)}
-                audit.log("tool_error", tool=block.name, error=str(exc))
+                audit.log("tool_error", tool=name, error=str(exc))
 
-            tool_results.append({
-                "type": "tool_result",
-                "tool_use_id": block.id,
+            messages.append({
+                "role": "tool",
+                "tool_call_id": tc.id,
                 "content": json.dumps(result, default=str),
             })
-
-        messages.append({"role": "user", "content": tool_results})
 
     audit.log("session_end", total_iterations=iteration)
     print(f"\n✓ Audit log: {audit.log_path}")
@@ -193,20 +186,21 @@ _sift_tools_cache: list[dict] | None = None
 
 
 async def _get_tool_schemas() -> list[dict]:
-    """Load tool schemas from the SIFT MCP server."""
+    """Load tool schemas from the SIFT MCP server in OpenAI function-calling format."""
     global _sift_tools_cache
     if _sift_tools_cache:
         return _sift_tools_cache
 
-    # Import directly to avoid subprocess overhead in demo mode
-    from sift_mcp import tools as sift_tools
     from sift_mcp.server import list_tools
     tool_list = await list_tools()
     _sift_tools_cache = [
         {
-            "name": t.name,
-            "description": t.description,
-            "input_schema": t.inputSchema,
+            "type": "function",
+            "function": {
+                "name": t.name,
+                "description": t.description,
+                "parameters": t.inputSchema,
+            },
         }
         for t in tool_list
     ]
@@ -231,7 +225,8 @@ def main():
 
     output_dir = Path(args.output_dir)
     print(f"FIND EVIL! Autonomous IR — Case 20161104-VANKO")
-    print(f"Output directory: {output_dir.resolve()}")
+    print(f"Model: {MODEL}  Base: {API_BASE}")
+    print(f"Output: {output_dir.resolve()}")
     print("-" * 60)
 
     asyncio.run(run_investigation(output_dir))
